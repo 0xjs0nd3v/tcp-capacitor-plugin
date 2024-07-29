@@ -16,6 +16,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +46,10 @@ public class TCPPluginPlugin extends Plugin {
             if (socket != null && socket.isConnected())   {
                 socket.close();
             }
-            socket = new Socket(ipAddress, port);
+            socket = new Socket();
+            SocketAddress remoteAddress = new InetSocketAddress(ipAddress, port);
+            socket.connect(remoteAddress, 10000); // 10 secs
+            socket.setSoTimeout(28000); // 28 secs
             clients.add(socket);
         } catch (IOException e) {
             Log.d("Connection failed", e.getMessage());
